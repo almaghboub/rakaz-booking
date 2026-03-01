@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Booking Confirmed" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="alert alert-success">
+            <h3>{% trans "Your appointment has been submitted!" %}</h3>
+            <p>{% trans "You will receive a WhatsApp message to confirm your appointment." %}</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{% trans "Appointment Details" %}</h5>
+                <table class="table">
+                    <tr>
+                        <th>{% trans "Patient" %}</th>
+                        <td>{{ appointment.patient_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Doctor" %}</th>
+                        <td>{{ appointment.doctor.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Service" %}</th>
+                        <td>{{ appointment.service.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Date" %}</th>
+                        <td>{{ appointment.date }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Time" %}</th>
+                        <td>{{ appointment.time }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Status" %}</th>
+                        <td><span class="badge bg-warning">{{ appointment.get_status_display }}</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <a href="{% url 'appointments:book' %}" class="btn btn-primary mt-3">{% trans "Book Another" %}</a>
+    </div>
+</div>
+{% endblock %}
