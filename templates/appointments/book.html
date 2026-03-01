@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Book an Appointment" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>{% trans "Book an Appointment" %}</h2>
+        <form method="post" id="booking-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">{% trans "Book Now" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var doctorSelect = document.getElementById('id_doctor');
+    var serviceSelect = document.getElementById('id_service');
+    var dateInput = document.getElementById('id_date');
+    var timeInput = document.getElementById('id_time');
+
+    function loadSlots() {
+        var doctorId = doctorSelect ? doctorSelect.value : '';
+        var serviceId = serviceSelect ? serviceSelect.value : '';
+        var date = dateInput ? dateInput.value : '';
+        if (!doctorId || !serviceId || !date) return;
+
+        fetch('/appointments/slots/?doctor_id=' + doctorId + '&service_id=' + serviceId + '&date=' + date)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (timeInput && data.slots) {
+                    timeInput.setAttribute('list', 'slots-list');
+                    var datalist = document.getElementById('slots-list');
+                    if (!datalist) {
+                        datalist = document.createElement('datalist');
+                        datalist.id = 'slots-list';
+                        timeInput.parentNode.appendChild(datalist);
+                    }
+                    datalist.innerHTML = '';
+                    data.slots.forEach(function(slot) {
+                        var opt = document.createElement('option');
+                        opt.value = slot;
+                        datalist.appendChild(opt);
+                    });
+                }
+            });
+    }
+
+    if (doctorSelect) doctorSelect.addEventListener('change', loadSlots);
+    if (serviceSelect) serviceSelect.addEventListener('change', loadSlots);
+    if (dateInput) dateInput.addEventListener('change', loadSlots);
+});
+</script>
+{% endblock %}
