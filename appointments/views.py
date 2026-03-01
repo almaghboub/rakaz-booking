@@ -10,6 +10,7 @@ from .forms import BookingForm
 from doctors.models import Doctor
 from services.models import Service
 from webhooks.messages import CONFIRMATION_MESSAGE
+from webhooks.models import MessageLog
 
 
 DAY_MAP = {
@@ -104,7 +105,6 @@ def book_appointment(request):
                 time=appointment.time.strftime('%H:%M'),
             )
             # Log outbound message
-            from webhooks.models import MessageLog
             MessageLog.objects.create(
                 appointment=appointment,
                 direction='OUTBOUND',

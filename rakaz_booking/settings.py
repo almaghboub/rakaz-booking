@@ -4,10 +4,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-insecure-key-change-in-production')
+# WARNING: Set a strong SECRET_KEY environment variable in production
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  # Restrict to specific domains in production
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -93,3 +94,4 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 WHATSAPP_WEBHOOK_TOKEN = os.environ.get('WHATSAPP_WEBHOOK_TOKEN', 'dev-webhook-token')
+# WARNING: Set a strong WHATSAPP_WEBHOOK_TOKEN environment variable in production

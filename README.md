@@ -17,4 +17,3 @@ python manage.py runserver
 - WhatsApp webhook for appointment confirmation
 - Doctor dashboard with daily/weekly schedule
 - Admin panel for managing clinics, doctors, services, appointments
-MVP Smart Clinic Booking System (Arabic + English)
