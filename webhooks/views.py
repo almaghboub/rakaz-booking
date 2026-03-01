@@ -38,7 +38,6 @@ def whatsapp_webhook(request):
 
     if not appointment:
         return JsonResponse({'error': 'No pending appointment found for this phone'}, status=404)
-
     lang = appointment.preferred_language
 
     # Log inbound message

@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta, time as time_type
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
@@ -119,7 +119,7 @@ def book_appointment(request):
 
 
 def confirmation(request, pk):
-    appointment = Appointment.objects.get(pk=pk)
+    appointment = get_object_or_404(Appointment, pk=pk)
     return render(request, 'appointments/confirmation.html', {'appointment': appointment})
 
 

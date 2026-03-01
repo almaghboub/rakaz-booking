@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
@@ -76,7 +77,8 @@ def doctor_arrived(request):
     try:
         doctor = Doctor.objects.get(pk=doctor_id)
     except Doctor.DoesNotExist:
-        return JsonResponse({'error': 'Doctor not found'}, status=404)
+        messages.error(request, 'Doctor not found.')
+        return redirect('dashboard:schedule')
 
     # Get today's confirmed appointments for the doctor
     confirmed_appointments = Appointment.objects.filter(
@@ -85,6 +87,7 @@ def doctor_arrived(request):
         status=Appointment.STATUS_CONFIRMED,
     )
 
+    count = confirmed_appointments.count()
     for appt in confirmed_appointments:
         msg = DOCTOR_ARRIVED_BROADCAST[appt.preferred_language].format(
             doctor=doctor.name,
@@ -96,7 +99,8 @@ def doctor_arrived(request):
             message=f'[DOCTOR ARRIVED] {msg}',
         )
 
-    return JsonResponse({'status': 'ok', 'notified': confirmed_appointments.count()})
+    messages.success(request, f'Dr. {doctor.name} marked as arrived. {count} patient(s) notified.')
+    return redirect('dashboard:schedule')
 
 
 @login_required
@@ -123,4 +127,5 @@ def broadcast(request):
         )
         count += 1
 
-    return JsonResponse({'status': 'ok', 'sent': count})
+    messages.success(request, f'Broadcast sent to {count} patient(s).')
+    return redirect('dashboard:schedule')
